@@ -1,142 +1,227 @@
-# ZLPhotoBrowser
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/ZLPhotoBrowser.png)
+
 [![Version](https://img.shields.io/cocoapods/v/ZLPhotoBrowser.svg?style=flat)](http://cocoadocs.org/docsets/ZLPhotoBrowser)
 [![License](https://img.shields.io/cocoapods/l/ZLPhotoBrowser.svg?style=flat)](http://cocoadocs.org/docsets/ZLPhotoBrowser)
 [![Platform](https://img.shields.io/cocoapods/p/ZLPhotoBrowser.svg?style=flat)](http://cocoadocs.org/docsets/ZLPhotoBrowser)
 ![Language](https://img.shields.io/badge/Language-%20Objective%20C%20-blue.svg)
+<a href="http://www.jianshu.com/u/a02909a8a93b"><img src="https://img.shields.io/badge/JianShu-@longitachi-red.svg?style=flat"></a>
 
-###框架整体介绍
-* 该框架为一个多选照片（不支持视频）的框架，兼容设备开启的iCloud照片存储，并在加载和选择iCloud端照片时做部分细节处理(快速滑动切换图片不会导致图片显示混乱)，支持记录历史选择照片。
-  * 1.支持多语言国际化(中:简繁, 英，日)
-    * [多语言国际化效果图] (#多语言国际化效果图)
-  * 2.支持预览多选(预览图数量及最大多选数可设置)
-    * [预览快速多选效果图] (#预览快速多选效果图)
-  * 3.支持直接进入相册多选
-    * [直接进入相册选择相片效果图] (#直接进入相册选择相片效果图)
-  * 4.支持预览大图，大图的缩放等
-    * [预览大图及缩放效果图] (#预览大图及缩放效果图)
-  * 5.支持实时拍照
-  * 6.支持多相册(不同的相册名字)图片混合多选
-    * [相册内混合选择效果图] (#相册内混合选择效果图)
-  * 7.预览已选择照片
-    * [预览已选择照片效果图] (#预览已选择照片效果图)
-  * 8.原图功能
-    * [原图功能效果图] (#原图功能效果图)
-  * 9.可实时监测相册图片变化(即在预览图时，如果用户触发截屏等操作，会实时的加载出该图片)
-    * [实时监测相册内图片变化] (#实时监测相册内图片变化)
-  * 10.加载iCloud端照片(所有照片加载时都会先加载模糊的图片，然后过渡高清图，iCloud端照片加载更加明显)
-    * [加载iCloud端照片效果图] (#加载iCloud端照片效果图)
-* [常用Api] (#常用Api)
-* [过期Api] (#过期Api)
-* [使用方法(支持cocoapods安装)] (#使用方法)
+----------------------------------------
 
-###框架支持与框架依赖
-* iOS8.0, * (采用arc模式)
-* XCode8.0, * (需要导入Photos.framework)
+### 框架整体介绍
+* [功能介绍](#功能介绍)
+* [更新日志](#更新日志)
+* [使用方法(支持cocoapods安装)](#使用方法)
+* [问答](#问答)
+* [效果图](#效果图)
 
-###注意点
-如果项目中设置了
-```objc
-[[UINavigationBar appearance] setTranslucent:NO];
+### <a id="功能介绍"></a>功能介绍
+- [x] 支持横竖屏 (已适配iPhone X)
+- [x] 预览快速选择、可设置预览最大数
+- [x] 直接进入相册选择
+- [x] 预览界面拖拽选择
+- [x] 相册内滑动多选
+- [x] 裁剪图片(可自定义裁剪比例)
+- [x] 编辑视频
+- [x] 查看、选择gif、LivePhoto(iOS9.0)、video
+- [x] 3D Touch预览image、gif、LivePhoto、video
+- [x] 混合选择image、gif、livePhoto、video
+- [x] 在线下载iCloud照片
+- [x] 控制选择video最大时长
+- [x] 多语言国际化(中文简/繁、英文、日文，可设置跟随系统和自行切换)
+- [x] 相册内拍照按钮实时显示镜头捕捉画面
+- [x] 已选择图片遮罩层标记
+- [x] 预览已选择照片
+- [x] 预览网络及本地照片(支持长按保存至相册)
+- [x] 相册内图片自定义圆角弧度
+- [x] 自定义升序降序排列
+- [x] 支持点击拍照及长按录制视频 (仿微信)
+- [x] 开发者可自定义资源图片
+- [x] 支持导出视频(可指定导出视频尺寸、添加图片水印、粒子特效 ps:文字水印暂不支持)
+
+### Feature
+
+> 如果您在使用中有好的需求及建议，或者遇到什么bug，欢迎随时issue，我会及时的回复
+ 
+### 更新日志
+> [更多更新日志](https://github.com/longitachi/ZLPhotoBrowser/blob/master/UPDATELOG.md)
 ```
-则需要在ZLDefine.h里 把kViewHeight 修改为
-```objc
-#define kViewHeight [[UIScreen mainScreen] bounds].size.height - 64
-```
-
-###<a id="常用Api"></a>常用Api
-```objc
-/** 最大选择数 default is 10 */
-@property (nonatomic, assign) NSInteger maxSelectCount;
-
-/** 预览图最大显示数 default is 20 */
-@property (nonatomic, assign) NSInteger maxPreviewCount;
-
-/**
- * @brief 显示多选照片视图，带预览效果
- * @param sender 调用该控件的视图控制器
- * @param animate 是否显示动画效果
- * @param lastSelectPhotoModels 已选择的PHAsset，再次调用"showWithSender:animate:lastSelectPhotoModels:completion:"方法之前，可以把上次回调中selectPhotoModels赋值给该属性，便可实现记录上次选择照片的功能，若不需要记录上次选择照片的功能，则该值传nil即可
- * @param completion 完成回调
- */
-- (void)showPreviewPhotoWithSender:(UIViewController *)sender
-                 animate:(BOOL)animate
-   lastSelectPhotoModels:(NSArray<ZLSelectPhotoModel *> * _Nullable)lastSelectPhotoModels
-              completion:(void (^)(NSArray<UIImage *> *selectPhotos, NSArray<ZLSelectPhotoModel *> *selectPhotoModels))completion;
-
-/**
- * @brief 显示多选照片视图，直接进入相册选择界面
- * 参数含义同上
- */
-- (void)showPhotoLibraryWithSender:(UIViewController *)sender
-             lastSelectPhotoModels:(NSArray<ZLSelectPhotoModel *> * _Nullable)lastSelectPhotoModels
-                        completion:(void (^)(NSArray<UIImage *> *selectPhotos, NSArray<ZLSelectPhotoModel *> *selectPhotoModels))completion;
-
+● 2.6.1: 新增导出视频添加粒子特效功能(如下雪特效); 新增编辑图片时旋转图片功能;
+● 2.6.0: ①：新增调用系统相机录制视频功能;
+         ②：支持导出指定尺寸的视频，支持导出视频添加图片水印;
+         ③：优化部分UI显示;
+● 2.5.5: 视频导出方法中添加压缩设置参数; 支持app名字国际化的获取; 删除视频导出3gp格式; fix #157;
+● 2.5.4: 新增视频导出功能; 新增获取图片路径api; 优化自定义相机，当相机消失后恢复其他音乐软件的播放;
+● 2.5.3: 拍摄视频及编辑视频支持多种格式(mov, mp4, 3gp); 新增相册名字等多语言，以完善手动设置语言时相册名字跟随系统的问题; 简化相册调用，configuration 由必传参数修改为非必传参数;
+● 2.5.2: 提取相册配置参数独立为'ZLPhotoConfiguration'对象; 新增状态栏样式api; 优化部分代码;
+● 2.5.1: ①：新增自定义相机(仿微信)，开发者可选使用自定义相机或系统相机;
+         ②：支持录制视频，可设置最大录制时长及清晰度;
+● 2.5.0.2: 新增自行切换框架语言api; 编辑图片界面当只有一个比例且为custom或1:1状态下隐藏比例切换工具条;
+● 2.5.0.1: 提供逐个解析图片api，方便 shouldAnialysisAsset 为 NO 时的使用; 提供控制是否可以选择原图参数;
+● 2.5.0: 新增选择后是否自动解析图片参数 shouldAnialysisAsset (针对需要选择大量图片的功能，框架一次解析大量图片时，会导致内存瞬间大幅增高，建议此时置该参数为NO，然后拿到asset后自行逐个解析); 修改图片压缩方式，确保原图尺寸不变
+● 2.4.9: 新增预览界面拖拽选择的功能; 支持开发者使用自定义图片资源; 开放导航标题颜色、底部工具栏背景色、底部按钮可交互与不可交互标题颜色的设置api;
+● 2.4.6: 新增网络图片长按保存至相册功能;
+● 2.4.3: 适配iPhone X，优化初次启动进入相册速度，预览网络图片可设置是否显示底部工具条及导航右侧按钮;
+● 2.4.2: 新增编辑视频功能;
 ```
 
-###<a id="过期Api"></a>过期Api
-```objc
-//如继续使用该api，将默认调用显示预览视图的效果api
-- (void)showWithSender:(UIViewController *)sender
-               animate:(BOOL)animate
-        lastSelectPhotoModels:(NSArray<ZLSelectPhotoModel *> * _Nullable)lastSelectPhotoModels
-            completion:(void (^)(NSArray<UIImage *> *selectPhotos, NSArray<ZLSelectPhotoModel *> *selectPhotoModels))completion NS_DEPRECATED(2.0, 2.0, 2.0, 8.0, "Use - showPreviewPhotoWithSender:animate:lastSelectPhotoModels:completion:");
-```
+### 框架支持
+最低支持：iOS 8.0 
 
-###<a id="使用方法"></a>使用方法
-- 直接把PhotoBrowser文件夹拖入到您的工程中
-- Cocoapods安装
+IDE：Xcode 9.0 及以上版本 (由于适配iPhone X使用iOS11api，所以请使用Xcode 9.0及以上版本)
+
+### <a id="使用方法"></a>使用方法
+
+第一步：
+* Manually 
+  * 1.直接把PhotoBrowser文件夹拖入到您的工程中
+  * 2.导入 Photos.framework及PhotosUI.framework
+  * 3.项目依赖 `SDWebImage`，所以需要导入该框架
+  * 4.导入 "ZLPhotoActionSheet.h"
+* Cocoapods
+  * 1.在Podfile 中添加 `pod 'ZLPhotoBrowser'`
+  * 2.执行 `pod setup`
+  * 3.执行 `pod install` 或 `pod update`
+  * 4.导入 \<ZLPhotoActionSheet.h\>
+
+第二步：
+- 在项目plist配置文件中添加如下键值对
 ```objc
-pod search ZLPhotoBrowser
-```
-- 在项目plist配置文件中添加如下键，值并设为YES
-```objc
+//如果不添加该键值对，则不支持多语言，相册名称默认为英文
 Localized resources can be mixed YES
 //或者右键plist文件Open As->Source Code 添加
 <key>CFBundleAllowMixedLocalizations</key>
 <true/>
+
+//相册使用权限描述
+Privacy - Photo Library Usage Description
+//相机使用权限描述
+Privacy - Camera Usage Description
+//麦克风使用权限描述
+Privacy - Microphone Usage Description
 ```
 
+代码中调用
 ```objc
 #import "ZLPhotoActionSheet.h"
-
-ZLPhotoActionSheet *actionSheet = [[ZLPhotoActionSheet alloc] init];
-//设置最大选择数量
-actionSheet.maxSelectCount = 5;
-//设置预览图最大数目
-actionSheet.maxPreviewCount = 20;
-[actionSheet showPreviewPhotoWithSender:self animate:YES lastSelectPhotoModels:self.lastSelectMoldels completion:^(NSArray<UIImage *> * _Nonnull selectPhotos, NSArray<ZLSelectPhotoModel *> * _Nonnull selectPhotoModels) {
-        // your codes...
-}];
     
+ZLPhotoActionSheet *ac = [[ZLPhotoActionSheet alloc] init];
+
+//相册参数配置，configuration有默认值，可直接使用并对其属性进行修改
+ac.configuration.maxSelectCount = 5;
+ac.configuration.maxPreviewCount = 10;
+
+//如调用的方法无sender参数，则该参数必传
+ac.sender = self;
+
+//选择回调
+[ac setSelectImageBlock:^(NSArray<UIImage *> * _Nonnull images, NSArray<PHAsset *> * _Nonnull assets, BOOL isOriginal) {
+    //your codes
+}];
+
+//调用相册
+[ac showPreviewAnimated:YES];
+
+//预览网络图片
+[ac previewPhotos:arrNetImages index:0 hideToolBar:YES complete:^(NSArray * _Nonnull photos) {
+    //your codes
+}];
 ```
 
-###<a id="多语言国际化效果图"></a>多语言国际化效果图
+### <a id="问答"></a>问答
+* 关于 `@available(9.0, *)` 报错 ([#90](https://github.com/longitachi/ZLPhotoBrowser/issues/90))
+> 该错误会出现在XCode 9.0以下版本，把该代码替换为 `[UIDevice currentDevice].systemVersion.floatValue >= 9.0` 即可
+
+* 从 `pod 2.4.3` 以下版本更新到 `pod 2.4.3` 以上版本报如下错误 `Terminating app due to uncaught exception 'NSUnknownKeyException', reason: '[<ZLThumbnailViewController 0x15bed0d10> setValue:forUndefinedKey:]: this class is not key value coding-compliant for the key verLeftSpace.'`
+> 由于 `pod 2.4.3` 版本删除对应xib，所以请执行 `command+shift+k` clean项目，重启Xcode即可
+
+### <a id="效果图"></a> 效果图
+- 多语言国际化效果图
 ![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/english.png)
 ![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/japan.png)
 ![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/zh-hans.png)
 ![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/zh-hant.png)
 
-###<a id="预览快速多选效果图"></a>预览快速多选效果图
+- iPhone X
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/iPhoneXPortrait.png)
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/IPhoneXLandscape.png)
+
+- 3DTouch预览效果图
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/forceTouch.gif)
+
+- 导出视频添加粒子特效(雪花效果)
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/snowEffect.gif)
+
+- 编辑视频预览图
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/editVideo.gif)
+
+- 编辑图片预览图
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/edit.gif)
+
+- 自定义相机效果图及介绍
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/customCamera.gif)
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/introduce.png)
+
+- 滑动多选预览图
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/slideSelect.gif)
+
+- 拖拽选择预览图
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/dragSelect.gif)
+
+- 混合选择预览图
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/mixSelect.gif)
+
+- 横屏预览图
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/landscape.gif)
+
+- 预览网络图片
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/previewNetImage.gif)
+
+- 遮罩层
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/selectmask.gif)
+
+- 预览快速多选效果图
+
 ![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/预览图快速选择.gif)
 ![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/预览大图快速选择.gif)
 
-###<a id="直接进入相册选择相片效果图"></a>直接进入相册选择相片效果图
+- 直接进入相册选择相片效果图
+
 ![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/直接进入相册选择相片.gif)
 
-###<a id="预览大图及缩放效果图"></a>预览大图及缩放效果图
-![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/查看大图支持缩放.gif)
+- 预览大图及缩放效果图
 
-###<a id="相册内混合选择效果图"></a>相册内混合选择效果图
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/查看大图支持缩放.gif)
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/预览选择gif.gif)
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/预览选择视频.gif)
+
+- 拍照
+
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/相册内部拍照.gif)
+
+- 相册内混合选择效果图
+
 ![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/相册内混合选择.gif)
 
-###<a id="预览已选择照片效果图"></a>预览已选择照片效果图
-![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/预览已选择照片.gif)
+- 预览已选择照片效果图
 
-###<a id="原图功能效果图"></a>原图功能效果图
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/预览已选择照片.gif)
+![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/预览确定选择的照片.gif)
+
+- 原图功能效果图
+
 ![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/原图功能.gif)
 
-###<a id="实时监测相册内图片变化"></a>实时监测相册内图片变化
-![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/实时监控相册变化.gif)
-
-###<a id="加载iCloud端照片效果图"></a>加载iCloud端照片效果图
-![image](https://github.com/longitachi/ZLPhotoBrowser/blob/master/效果图/加载iCloud照片.gif)
